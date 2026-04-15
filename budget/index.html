@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Budget Optimization System</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div id="toastContainer"></div>
+
+    <div class="container">
+        <header>
+            <div class="header-left">
+                <i class="fa-solid fa-chart-line logo-icon"></i>
+                <h1>Budget Optimizer</h1>
+            </div>
+            <div class="header-right">
+                <button id="historyToggle" title="View History"><i class="fa-solid fa-clock-rotate-left"></i> History</button>
+                <button id="darkModeToggle" title="Toggle Dark Mode"><i class="fa-solid fa-moon"></i></button>
+            </div>
+        </header>
+
+        <div class="card">
+            <h2><i class="fa-solid fa-wallet"></i> Budget Settings</h2>
+            <div class="budget-row">
+                <div class="field-group">
+                    <label for="totalBudget">Total Budget</label>
+                    <input type="number" id="totalBudget" placeholder="e.g. 500" min="0" step="0.01">
+                    <span class="field-error" id="budgetError"></span>
+                </div>
+                <div class="field-group">
+                    <label for="currencySelect">Currency</label>
+                    <select id="currencySelect">
+                        <option value="$">$ USD</option>
+                        <option value="€">€ EUR</option>
+                        <option value="£">£ GBP</option>
+                        <option value="¥">¥ JPY</option>
+                        <option value="₹">₹ INR</option>
+                        <option value="RM">RM MYR</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2><i class="fa-solid fa-list-check"></i> Investment Options</h2>
+            <div class="item-header">
+                <span>Name</span>
+                <span>Cost</span>
+                <span>Profit</span>
+                <span></span>
+            </div>
+            <div id="itemsContainer"></div>
+            <div class="item-actions">
+                <button id="addItem"><i class="fa-solid fa-plus"></i> Add Item</button>
+                <button id="loadSample" class="btn-secondary"><i class="fa-solid fa-database"></i> Load Sample</button>
+                <button id="undoBtn" class="btn-icon" title="Undo"><i class="fa-solid fa-rotate-left"></i></button>
+                <button id="redoBtn" class="btn-icon" title="Redo"><i class="fa-solid fa-rotate-right"></i></button>
+            </div>
+        </div>
+
+        <div class="card controls-card">
+            <button id="calculate"><i class="fa-solid fa-calculator"></i> Calculate</button>
+            <button id="reset" class="btn-gray"><i class="fa-solid fa-arrows-rotate"></i> Reset</button>
+            <button id="exportCSV" class="btn-teal"><i class="fa-solid fa-file-csv"></i> Export CSV</button>
+            <div class="chart-type-group">
+                <label for="chartType"><i class="fa-solid fa-chart-pie"></i> Chart</label>
+                <select id="chartType">
+                    <option value="bar">Bar</option>
+                    <option value="pie">Pie</option>
+                    <option value="doughnut">Doughnut</option>
+                </select>
+            </div>
+        </div>
+
+        <section class="results card" id="results" style="display:none;">
+            <h2><i class="fa-solid fa-trophy"></i> Results</h2>
+
+            <div class="result-summary">
+                <div class="stat-card">
+                    <i class="fa-solid fa-sack-dollar"></i>
+                    <div>
+                        <span class="stat-label">Total Profit</span>
+                        <span class="stat-value" id="totalProfit"></span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <i class="fa-solid fa-money-bill-wave"></i>
+                    <div>
+                        <span class="stat-label">Budget Used</span>
+                        <span class="stat-value" id="budgetUsed"></span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <i class="fa-solid fa-piggy-bank"></i>
+                    <div>
+                        <span class="stat-label">Remaining</span>
+                        <span class="stat-value" id="remainingBudget"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="budget-progress-wrap">
+                <label>Budget Usage</label>
+                <div class="budget-progress-bar">
+                    <div class="budget-progress-fill" id="budgetProgressFill"></div>
+                </div>
+                <span id="budgetProgressLabel"></span>
+            </div>
+
+            <div class="tabs">
+                <button class="tab-btn active" data-tab="selected"><i class="fa-solid fa-check-circle"></i> Selected Items</button>
+                <button class="tab-btn" data-tab="comparison"><i class="fa-solid fa-table-columns"></i> Comparison</button>
+            </div>
+
+            <div class="tab-content" id="tab-selected">
+                <ul id="selectedList"></ul>
+            </div>
+
+            <div class="tab-content hidden" id="tab-comparison">
+                <table id="comparisonTable">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Cost</th>
+                            <th>Profit</th>
+                            <th>ROI %</th>
+                            <th>Selected</th>
+                            <th>Fraction</th>
+                        </tr>
+                    </thead>
+                    <tbody id="comparisonBody"></tbody>
+                </table>
+            </div>
+
+            <div class="chart-container">
+                <canvas id="profitChart"></canvas>
+            </div>
+        </section>
+
+        <section class="card history-panel" id="historyPanel" style="display:none;">
+            <h2><i class="fa-solid fa-clock-rotate-left"></i> Calculation History</h2>
+            <ul id="historyList"></ul>
+            <button id="clearHistory" class="btn-gray"><i class="fa-solid fa-trash"></i> Clear History</button>
+        </section>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
